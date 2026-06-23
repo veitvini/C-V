@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossa História ❤️</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <style>
+        :root {
+            --primary: #ff2d55;
+            --primary-light: #ffb3c6;
+            --bg-gradient: radial-gradient(circle at top, #1f0026, #07000a 80%);
+            --card-bg: rgba(42, 0, 51, 0.45); 
+            --glass-border: rgba(255, 45, 85, 0.25);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: #f5f5f5;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.5px;
+        }
+
+        /* TELA DE LOGIN CENTRALIZADA */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        #login {
+            text-align: center;
+            width: 100%;
+            max-width: 380px;
+            padding: 40px 25px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(255, 45, 85, 0.15);
+        }
+
+        #login h1 {
+            font-size: 2rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: var(--primary-light);
+        }
+
+        input {
+            padding: 14px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            font-size: 16px;
+            width: 85%;
+            max-width: 260px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s;
+            margin-bottom: 25px;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 45, 85, 0.4);
+        }
+
+        button {
+            padding: 12px 35px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(255, 45, 85, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 45, 85, 0.7);
+        }
+
+        /* TELA INTERMEDIÁRIA: DO YOU LOVE ME? */
+        #telaPergunta {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+
+        .janela-retro {
+            background: #000;
+            border: 3px solid #fff;
+            padding: 30px;
+            box-shadow: 10px 10px 0px #222;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            font-family: 'Press Start 2P', monospace;
+            z-index: 5;
+            position: relative;
+        }
+
+        .janela-retro h2 {
+            font-family: 'Press Start 2P', monospace;
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .botoes-love {
+            display: flex;
+            justify-content: flex-start; /* Alinha o Yes fixo na esquerda */
+            align-items: center;
+            height: 60px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .btn-love {
+            font-family: 'Press Start 2P', monospace;
+            padding: 10px 25px;
+            font-size: 1rem;
+            border: 3px solid #fff;
+            background: #000;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .btn-love:hover {
+            background: #fff;
+            color: #000;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #btnYes {
+            position: relative;
+            z-index: 6; /* Garante que fica sempre clicável e visível */
+        }
+
+        #btnNo {
+            position: absolute;
+            right: 20px; /* Começa comportado no lado direito, longe do Yes */
+            transition: all 0.15s ease;
+            touch-action: none;
+            z-index: 7;
+        }
+
+        /* TELA DE SUCESSO DO "YES" (OCUPA 100% DA TELA REAL) */
+        #telaLoveYouSucesso {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 10000;
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Efeito de esteira/fundo infinito preenchendo a tela toda com brilho máximo */
+        .fundo-love-repetido {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.75; 
+            font-family: 'Press Start 2P', monospace;
+            font-size: 13px;
+            line-height: 2;
+            color: #ff2d55;
+            user-select: none;
+            overflow: hidden;
+            text-shadow: 0 0 10px #ff2d55, 0 0 20px #ff2d55;
+            padding: 10px;
+            box-sizing: border-box;
+            word-break: break-all;
+        }
+
+        .centro-love {
+            position: relative;
+            z-index: 10001;
+            text-align: center;
+            font-family: 'Press Start 2P', monospace;
+            animation: pulsar 1s infinite alternate;
+        }
+
+        .centro-love h1 {
+            font-family: 'Press Start 2P', monospace;
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #ff2d55, 0 0 30px #ff2d55;
+        }
+
+        .centro-love .coracao-grande {
+            font-size: 95px;
+            display: inline-block;
+            filter: drop-shadow(0 0 20px #ff2d55);
+        }
+
+        @keyframes pulsar {
+            from { transform: scale(0.92); }
+            to { transform: scale(1.08); }
+        }
+
+        /* SITE PRINCIPAL */
+        #conteudo {
+            display: none;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .main-title {
+            text-align: center;
+            color: var(--primary-light);
+            font-size: 2.8rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 179, 198, 0.3);
+        }
+
+        /* PLAYER */
+        .player {
+            max-width: 420px;
+            margin: 0 auto 40px auto;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .capa {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            object-fit: cover;
+        }
+
+        .rotando {
+            animation: spin 8s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .info {
+            flex: 1;
+        }
+
+        .info strong {
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .info small {
+            color: #ccc;
+        }
+
+        .barra {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 12px 0 6px 0;
+            cursor: pointer;
+        }
+
+        .barra-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+
+        .tempo {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #a0a0a0;
+            margin-bottom: 10px;
+        }
+
+        .btn-play {
+            padding: 6px 18px;
+            font-size: 13px;
+        }
+
+        /* TIMELINE COM MENOS ESPAÇAMENTO */
+        .timeline {
+            position: relative;
+            max-width: 520px;
+            margin: 40px auto;
+            padding-left: 35px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), var(--primary-light), transparent);
+        }
+
+        .evento {
+            position: relative;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .evento:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(255, 45, 85, 0.15);
+        }
+
+        .evento::before {
+            content: '❤️';
+            position: absolute;
+            left: -42px;
+            top: 18px;
+            font-size: 14px;
+            background: #07000a;
+            border-radius: 50%;
+            padding: 2px;
+        }
+
+        .evento h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--primary-light);
+            font-size: 1.2rem;
+        }
+
+        .evento h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #f5f5f5;
+            margin-top: 12px;
+            margin-bottom: 0;
+            font-weight: 400;
+            text-align: left;
+        }
+
+        /* FOTOS E VÍDEOS MENORES */
+        .media-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 14px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        }
+
+        .evento img, .evento video, .card video, .card img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .evento img:hover, .evento video:hover {
+            transform: scale(1.04);
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: 24px;
+            margin: 30px auto;
+            max-width: 520px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .card h2 {
+            color: var(--primary-light);
+            margin-top: 0;
+        }
+
+        #contador {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 45, 85, 0.6);
+            margin: 15px 0 0 0;
+        }
+
+        .love-text {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            font-weight: 300;
+            color: #f0f0f0;
+            text-align: justify;
+        }
+
+        .coracao-flutuante {
+            position: fixed;
+            color: rgba(255, 45, 85, 0.4);
+            font-size: 14px;
+            pointer-events: none;
+            z-index: -1;
+            animation: subir 4s linear infinite;
+        }
+
+        @keyframes subir {
+            0% { transform: translateY(105vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-5vh) scale(1.2); opacity: 0; }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- TELA DE LOGIN -->
+<div class="login-container" id="telaLogin">
+    <div id="login">
+        <h1>Área Exclusiva</h1>
+        <input type="password" id="senha" placeholder="Digite a senha do casal...">
+        <br>
+        <button onclick="entrar()">Entrar</button>
+    </div>
+</div>
+
+<!-- TELA DA PERGUNTA INTERMEDIÁRIA (DO YOU LOVE ME?) -->
+<div id="telaPergunta">
+    <div class="janela-retro">
+        <h2>Do you love me?</h2>
+        <div class="botoes-love">
+            <button class="btn-love" id="btnYes" onclick="aceitouAmor()">Yes</button>
+            <button class="btn-love" id="btnNo" onmouseover="fugaNo()" ontouchstart="fugaNo(event)" onclick="fugaNo(event)">No</button>
+        </div>
+    </div>
+
+    <!-- Tela do meme (Agora 100% corrigida e brilhante) -->
+    <div id="telaLoveYouSucesso">
+        <div class="fundo-love-repetido" id="fundoRepetido"></div>
+        <div class="centro-love">
+            <h1>LOVE YOU</h1>
+            <span class="coracao-grande">❤️</span>
+        </div>
+    </div>
+</div>
+
+<!-- SITE PRINCIPAL -->
+<div id="conteudo">
+
+    <h1 class="main-title">Vinicius & Cibeli</h1>
+
+    <audio id="musica" src="chicletinho.mp3" preload="auto"></audio>
+
+    <div class="player">
+        <img src="capa.png" class="capa" id="capa">
+
+        <div class="info">
+            <strong>Chicletinho</strong><br>
+            <small>Marcela Jardim</small>
+
+            <div class="barra" id="barra-container">
+                <div class="barra-fill" id="barra"></div>
+            </div>
+
+            <div class="tempo">
+                <span id="tempo">0:00</span>
+                <span id="duracao">...</span>
+            </div>
+
+            <button class="btn-play" id="btnPlay" onclick="toggleMusica()">▶ Play</button>
+        </div>
+    </div>
+
+    <div class="timeline">
+
+        <div class="evento" data-aos="fade-up">
+            <h3>🎥 Uma das nossas saidinhas</h3>
+            <div class="media-container">
+                <video autoplay muted loop playsinline>
+                    <source src="videolegal.mp4" type="video/mp4">
+                </video>
+            </div>
+            <h2>Isso vai ficar pra sempre no meu coração ❤️</h2>
+        </div>
+
+        <div class="evento" data-aos="fade-up">
+            <h3>📸 Primeira foto juntos</h3>
+            <div class="media-container">
+                <img src="primeirafoto5.jpg" alt="Primeira foto">
+            </div>
+            <h2>primeira de muitaaas</h2>
+        </div>
+
+        <div class="evento" data-aos="fade-up">
+            <h3>💍 Oficializado</h3>
+            <div class="media-container">
+                <img src="aliança.jpg" alt="Alianças">
+            </div>
+            <h2>Com certeza inesquecível</h2>
+        </div>
+
+        <div class="evento" data-aos="fade-up">
+            <h3>Você me completa 😺</h3>
+            <div class="media-container">
+                <img src="fotofofo1.jpg" alt="Foto fofa">
+            </div>
+            <h2>De todos os jeitos</h2>
+        </div>
+
+        <div class="evento" data-aos="fade-up">
+            <h3>Eu nasci pra ser o seu grudinhu 🫂</h3>
+            <div class="media-container">
+                <img src="xicreti.jpg" alt="Grudinho">
+            </div>
+            <h2>E você nasceu pra ser meu xicretinhu</h2>
+        </div>
+
+        <div class="evento" data-aos="fade-up">
+            <h3>KKKKKKKKKKKKKKKKKKK</h3>
+            <div class="media-container">
+                <img src="fotolegal4.jpg" alt="bobinhos">
+            </div>
+            <h2>Adoro ser boboquinha com vose</h2>
+
+        </div>
+
+                <div class="evento" data-aos="fade-up">
+            <h3>Vou estar ao seu lado pra sempre</h3>
+            <div class="media-container">
+                <img src="fotojuntu.jpg" alt="juntos">
+            </div>
+            <h2>Eu te amo meu amor❤️</h2>
+        </div>
+
+        <div class="evento" data-aos="fade-up">
+            <h3>Quando conheceu o papis</h3>
+            <div class="media-container">
+                <img src="pai.jpg" alt="Com o pai">
+            </div>
+        </div>
+
+        <div class="evento" data-aos="fade-up">
+            <h3>Natal na casa da Vovó</h3>
+            <div class="media-container">
+                <img src="mae.jpg" alt="Natal">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card" data-aos="zoom-in">
+        <h2>⏱️ C+V juntos há:</h2>
+        <p id="contador">Calculando...</p>
+    </div>
+
+    <div class="card" data-aos="zoom-in">
+        <h2>❤️ Pra Você ❤️</h2>
+        <p class="love-text">
+            Cada dia com você é especial. Obrigado por fazer parte da minha vida meu amor, obrigado por cuidar de mim, obrigado por me ajudar quando eu preciso e me proporcionar momentos inesquecíveis, você foi a melhor coisa que me aconteceu! EU TE AMOO imensamente, para todo o sempre sempre!❤️
+        </p>
+        <div class="media-container" style="max-width: 180px; margin: 20px auto 0 auto;">
+            <img src="cato.png" alt="Cato">
+        </div>
+    </div>
+
+    <div class="card" data-aos="zoom-in">
+        <h2>🎥 Um momento nosso</h2>
+        <div class="media-container">
+            <video autoplay muted loop playsinline>
+                <source src="videosaindo.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script>
+function entrar(){
+    const senha = document.getElementById("senha").value.toLowerCase().trim();
+
+    if(senha === "c+v"){
+        document.getElementById("telaLogin").style.display = "none";
+        document.getElementById("telaPergunta").style.display = "flex";
+    } else {
+        alert("Senha incorreta!");
+    }
+}
+
+/* SISTEMA ANTI-SOBREPOSIÇÃO: O 'NO' SÓ FOI AUTORIZADO A IR PARA A DIREITA OU EXTREMIDADES */
+function fugaNo(event) {
+    if(event) {
+        event.preventDefault(); 
+    }
+    const btnNo = document.getElementById("btnNo");
+    
+    // Força o botão a se mover em áreas distantes da posição do Yes (impede valores negativos de X)
+    const x = Math.random() * 120; // Apenas valores positivos mantêm ele na direita
+    const y = Math.random() * 160 - 80; 
+    
+    btnNo.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+/* EVENTO DE SUCESSO DO "YES" */
+function aceitouAmor() {
+    const telaSucesso = document.getElementById("telaLoveYouSucesso");
+    const fundoRepetido = document.getElementById("fundoRepetido");
+    
+    // Preenchimento massivo calculado para cobrir 100% de qualquer tela/resolução
+    let textoFundo = "";
+    for(let i = 0; i < 900; i++) {
+        textoFundo += "LOVE YOU ";
+    }
+    fundoRepetido.innerText = textoFundo;
+
+    telaSucesso.style.display = "flex";
+
+    setTimeout(() => {
+        const telaPergunta = document.getElementById("telaPergunta");
+        telaPergunta.style.opacity = "0"; 
+
+        setTimeout(() => {
+            telaPergunta.style.display = "none";
+            document.getElementById("conteudo").style.display = "block";
+
+            AOS.init({
+                duration: 700,
+                once: true
+            });
+
+            iniciarContador();
+            gerarCoracoesFundo();
+
+            musica.play().then(() => {
+                document.getElementById("capa").classList.add("rotando");
+                document.getElementById("btnPlay").innerText = "⏸ Pause";
+            }).catch(error => {
+                console.log("Autoplay bloqueado pelo navegador.");
+            });
+        }, 800); 
+    }, 3000); 
+}
+
+/* CONTADOR DIÁRIO */
+function iniciarContador(){
+    const inicio = new Date("2025-05-03T00:00:00");
+
+    setInterval(() => {
+        const agora = new Date();
+        const diff = agora - inicio;
+
+        const dias = Math.floor(diff / (1000*60*60*24));
+        const horas = Math.floor(diff / (1000*60*60)) % 24;
+        const min = Math.floor(diff / (1000*60)) % 60;
+        const seg = Math.floor(diff / 1000) % 60;
+
+        document.getElementById("contador").innerText =
+        `${dias} dias, ${horas}h ${min}m ${seg}s`;
+    }, 1000);
+}
+
+/* SISTEMA EXTRA: EFEITO DE CORAÇÕES NO FUNDO */
+function gerarCoracoesFundo() {
+    setInterval(() => {
+        const coracao = document.createElement("div");
+        coracao.classList.add("coracao-flutuante");
+        coracao.innerText = ["❤️", "💖", "✨", "💕"][Math.floor(Math.random() * 4)];
+        coracao.style.left = Math.random() * 100 + "vw";
+        coracao.style.animationDuration = (Math.random() * 2 + 3) + "s"; 
+        
+        document.body.appendChild(coracao);
+
+        setTimeout(() => {
+            coracao.remove();
+        }, 5000);
+    }, 450); 
+}
+
+/* CONTROLES DE ÁUDIO */
+const musica = document.getElementById("musica");
+const barra = document.getElementById("barra");
+const tempo = document.getElementById("tempo");
+const duracao = document.getElementById("duracao");
+const capa = document.getElementById("capa");
+const btnPlay = document.getElementById("btnPlay");
+
+function toggleMusica(){
+    if(musica.paused){
+        musica.play();
+        capa.classList.add("rotando");
+        btnPlay.innerText = "⏸ Pause";
+    }else{
+        musica.pause();
+        capa.classList.remove("rotando");
+        btnPlay.innerText = "▶ Play";
+    }
+}
+
+function formatarTempo(segundos) {
+    const m = Math.floor(segundos / 60);
+    const s = Math.floor(segundos % 60);
+    return `${m}:${s < 10 ? "0"+s : s}`;
+}
+
+musica.addEventListener("loadedmetadata", () => {
+    duracao.innerText = formatarTempo(musica.duration);
+});
+
+if (musica.readyState >= 2) {
+    duracao.innerText = formatarTempo(musica.duration);
+}
+
+musica.addEventListener("timeupdate", () => {
+    tempo.innerText = formatarTempo(musica.currentTime);
+    if (musica.duration) {
+        barra.style.width = (musica.currentTime / musica.duration) * 100 + "%";
+    }
+});
+
+document.getElementById("barra-container").addEventListener("click", (e) => {
+    const larguraTotal = e.currentTarget.clientWidth;
+    const cliqueX = e.offsetX;
+    const novaPorcentagem = cliqueX / larguraTotal;
+    musica.currentTime = novaPorcentagem * musica.duration;
+});
+</script>
+
+</body>
+</html>
